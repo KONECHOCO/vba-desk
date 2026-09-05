@@ -4,6 +4,15 @@ import { LANGS, t } from './types'
 import { ui } from './i18n'
 import { highlightVba } from './highlight'
 import {
+  adsAvailable,
+  initAds,
+  isAdFreeActive,
+  onAdFreeGranted,
+  onCommandOpened,
+  watchAdForAdFreeWindow,
+} from './ads'
+import { privacyIntro, privacySections } from './privacyPolicy'
+import {
   allCommands,
   categories,
   filterCommands,
@@ -19,13 +28,31 @@ type View = 'browse' | 'detail' | 'nav'
 const LANG_KEY = 'vba-desk-lang'
 const THEME_KEY = 'vba-desk-theme'
 
-function readHash(): { cmd?: string; cat?: string; sub?: string } {
+function readHash(): { cmd?: string; cat?: string; sub?: string; privacy?: boolean } {
   const raw = decodeURIComponent(location.hash.replace(/^#\/?/, ''))
   if (!raw) return {}
+  if (raw === 'privacy') return { privacy: true }
   const parts = raw.split('/')
   if (parts[0] === 'c' && parts[1]) return { cmd: parts[1] }
   if (parts[0] === 'cat' && parts[1]) return { cat: parts[1], sub: parts[2] }
   return {}
+}
+
+function Privacy({ lang }: { lang: Lang }) {
+  return (
+    <div className="overview">
+      <a className="back-btn copy-btn" href="#/">← {t(ui.backHome, lang)}</a>
+      <div className="kicker">{t(ui.privacyPolicy, lang)}</div>
+      <h1 className="display">{t(ui.privacyPolicy, lang)}</h1>
+      <p className="lead">{t(privacyIntro, lang)}</p>
+      {privacySections.map((s, i) => (
+        <div key={i}>
+          <h2 className="section-title">{t(s.heading, lang)}</h2>
+          <p className="prose">{t(s.body, lang)}</p>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 function writeHash(cmd?: string | null, cat?: string | null, sub?: string | null) {
@@ -49,11 +76,14 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
   const [view, setView] = useState<View>('browse')
+  const [showPrivacy, setShowPrivacy] = useState(() => readHash().privacy === true)
+  const [adFree, setAdFree] = useState(() => isAdFreeActive())
   const listRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const apply = () => {
       const h = readHash()
+      setShowPrivacy(h.privacy === true)
       if (h.cmd && getCommand(h.cmd)) {
         const cmd = getCommand(h.cmd)!
         setSelectedId(cmd.id)
@@ -71,6 +101,13 @@ export default function App() {
     window.addEventListener('hashchange', apply)
     return () => window.removeEventListener('hashchange', apply)
   }, [])
+
+  const initialLangRef = useRef(lang)
+  useEffect(() => {
+    initAds(initialLangRef.current)
+  }, [])
+
+  useEffect(() => onAdFreeGranted(() => setAdFree(true)), [])
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -107,6 +144,11 @@ export default function App() {
     setScope(cmd.scope.includes('core') ? 'core' : cmd.scope[0])
     setView('detail')
     writeHash(id)
+    onCommandOpened()
+  }
+
+  async function removeAdsForAWhile() {
+    await watchAdForAdFreeWindow()
   }
 
   function openCategory(id: string, sub?: string | null) {
@@ -158,8 +200,16 @@ export default function App() {
         ? t(activeCat.label, lang)
         : t(ui.overview, lang)
 
+  if (showPrivacy) {
+    return (
+      <div className="app" data-view="browse">
+        <Privacy lang={lang} />
+      </div>
+    )
+  }
+
   return (
-    <div className="app" data-view={view}>
+    <div className="app" data-view={view} data-ad-banner={adsAvailable && !adFree}>
       <header className="topbar">
         <a className="brand" href="#/" onClick={(e) => { e.preventDefault(); goHome() }}>
           <span className="logo" aria-hidden="true"><i /><i /></span>
@@ -185,6 +235,17 @@ export default function App() {
           />
         </div>
         <div className="top-actions">
+          {adsAvailable && (
+            adFree ? (
+              <span className="ad-free-badge">{t(ui.adsFreeActive, lang)}</span>
+            ) : (
+              <button className="icon-btn remove-ads-btn" type="button" onClick={removeAdsForAWhile} title={t(ui.removeAds, lang)} aria-label={t(ui.removeAds, lang)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                </svg>
+              </button>
+            )
+          )}
           {!isHome && (
             <button className="icon-btn menu-btn" type="button" onClick={() => setView('nav')} aria-label={t(ui.categories, lang)}>
               <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -520,7 +581,9 @@ function Home({
           ))}
         </div>
 
-        <p className="footer-note">{t(ui.footer, lang)}</p>
+        <p className="footer-note">
+          {t(ui.footer, lang)} · <a href="#/privacy">{t(ui.privacyPolicy, lang)}</a>
+        </p>
       </div>
     </div>
   )
