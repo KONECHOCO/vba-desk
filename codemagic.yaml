@@ -4,10 +4,9 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     integrations:
-      # Name of the App Store Connect API-key integration configured under
-      # Codemagic Team settings -> Integrations -> App Store Connect. Rename
-      # here if you named yours differently.
-      app_store_connect: codemagic_appstore
+      # Matches the existing "Ikonet Solutions" API key under Codemagic ->
+      # Personal Account settings -> Integrations -> Developer Portal.
+      app_store_connect: Ikonet Solutions
     environment:
       ios_signing:
         distribution_type: app_store
