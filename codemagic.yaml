@@ -11,9 +11,16 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.konechoco.vbadesk
+      groups:
+        # VITE_LEVELPLAY_APP_KEY_IOS, VITE_LEVELPLAY_BANNER_AD_UNIT_ID_IOS,
+        # VITE_LEVELPLAY_INTERSTITIAL_AD_UNIT_ID_IOS, VITE_LEVELPLAY_REWARDED_AD_UNIT_ID_IOS
+        # (Unity LevelPlay dashboard > VBA Desk iOS). Without them ads stay off.
+        - levelplay
       vars:
         XCODE_WORKSPACE: "App.xcworkspace"
         XCODE_SCHEME: "App"
+        VITE_ADS_TEST_MODE: "false"
+        VITE_PRIVACY_POLICY_URL: "https://konechoco.github.io/vba-desk/#/privacy"
       node: 20
       xcode: latest
       cocoapods: default

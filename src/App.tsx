@@ -11,6 +11,7 @@ import {
   onCommandOpened,
   watchAdForAdFreeWindow,
 } from './ads'
+import { RemoveAdsButton } from './monetization/RemoveAdsButton'
 import { privacyIntro, privacySections } from './privacyPolicy'
 import {
   allCommands,
@@ -107,7 +108,7 @@ export default function App() {
     initAds(initialLangRef.current)
   }, [])
 
-  useEffect(() => onAdFreeGranted(() => setAdFree(true)), [])
+  useEffect(() => onAdFreeGranted(() => setAdFree(isAdFreeActive())), [])
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -339,6 +340,7 @@ export default function App() {
                   </div>
                 )
               })}
+              <RemoveAdsButton locale={lang} />
             </nav>
 
             <aside className="list" ref={listRef}>
@@ -580,6 +582,8 @@ function Home({
             </button>
           ))}
         </div>
+
+        <RemoveAdsButton locale={lang} />
 
         <p className="footer-note">
           {t(ui.footer, lang)} · <a href="#/privacy">{t(ui.privacyPolicy, lang)}</a>
