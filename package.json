@@ -12,10 +12,14 @@
   },
   "levelplay": {
     "networks": [
-      "unityads"
+      "unityads",
+      "admob"
     ],
     "consentProvider": "custom",
-    "userTrackingDescription": "Questo identificativo viene usato per mostrarti pubblicità più pertinenti. / This identifier is used to show you more relevant ads."
+    "userTrackingDescription": "Questo identificativo viene usato per mostrarti pubblicità più pertinenti. / This identifier is used to show you more relevant ads.",
+    "admob": {
+      "appId": "ca-app-pub-1151868778464777~7181167155"
+    }
   },
   "dependencies": {
     "@capacitor/android": "^8.5.1",

@@ -59,6 +59,12 @@
         <key>SKAdNetworkIdentifier</key>
         <string>4dzt52r2t5.skadnetwork</string>
       </dict>
+      <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>cstr6suwn9.skadnetwork</string>
+      </dict>
     </array>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-1151868778464777~7181167155</string>
   </dict>
 </plist>
