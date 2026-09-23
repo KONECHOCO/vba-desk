@@ -7,27 +7,16 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "capacitor:sync:after": "node node_modules/capacitor-levelplay-ads/scripts/levelplay-manifest.js"
-  },
-  "levelplay": {
-    "networks": [
-      "unityads",
-      "admob"
-    ],
-    "consentProvider": "custom",
-    "userTrackingDescription": "Questo identificativo viene usato per mostrarti pubblicità più pertinenti. / This identifier is used to show you more relevant ads.",
-    "admob": {
-      "appId": "ca-app-pub-1151868778464777~7181167155"
-    }
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^8.1.0",
     "@capacitor/android": "^8.5.1",
     "@capacitor/cli": "^7.6.9",
     "@capacitor/core": "^8.5.1",
     "@capacitor/ios": "^8.5.1",
     "@capgo/native-purchases": "^8.8.1",
-    "capacitor-levelplay-ads": "^0.1.42",
+    "capacitor-unity-ads": "^1.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -42,5 +31,8 @@
     "sharp": "^0.35.4",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
+  },
+  "admob": {
+    "appId": "ca-app-pub-1151868778464777~7181167155"
   }
 }

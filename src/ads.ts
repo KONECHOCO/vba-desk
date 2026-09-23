@@ -1,7 +1,4 @@
 import type { Lang } from './types'
-import { t } from './types'
-import { ui } from './i18n'
-import { monetizationConfig } from './monetization/config'
 import {
   adsEnabled,
   bootstrapAds,
@@ -25,14 +22,7 @@ export function onAdFreeGranted(cb: () => void): () => void {
   return subscribePremium(cb)
 }
 
-export async function initAds(lang: Lang): Promise<void> {
-  monetizationConfig.consentCopy = {
-    locale: lang,
-    title: t(ui.consentTitle, lang),
-    message: t(ui.consentMessage, lang),
-    acceptButtonText: t(ui.consentAccept, lang),
-    declineButtonText: t(ui.consentDecline, lang),
-  }
+export async function initAds(_lang: Lang): Promise<void> {
   await bootstrapAds()
 }
 

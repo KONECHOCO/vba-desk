@@ -20,6 +20,11 @@ workflows:
         # (Unity LevelPlay dashboard > VBA Desk iOS). Without them ads stay off.
         - levelplay
       vars:
+        # Ads (not secrets): Unity Ads Game ID + placements, AdMob banner unit.
+        VITE_UNITY_GAME_ID_IOS: "800379207"
+        VITE_UNITY_INTERSTITIAL_PLACEMENT_ID_IOS: "Interstitial_iOS"
+        VITE_UNITY_REWARDED_PLACEMENT_ID_IOS: "Rewarded_iOS"
+        VITE_ADMOB_BANNER_ID_IOS: "ca-app-pub-1151868778464777/1931342922"
         XCODE_WORKSPACE: "App.xcworkspace"
         XCODE_SCHEME: "App"
         VITE_ADS_TEST_MODE: "false"
